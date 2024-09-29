@@ -1,8 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { useEffect } from "react";
-import { getAllRecords } from "../utils/supabaseFunctions";
-import { addTodo } from "../utils/supabaseFunctions";
+import { deleteTodo, getAllRecords, addTodo } from "../utils/supabaseFunctions";
 
 export const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -14,12 +13,17 @@ export const App = () => {
 
   useEffect(() => {
     getRecords();
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    const total = records.reduce((sum, record) => sum + record.time, 0);
+    setTotalTime(total);
+  }, [records]);
 
   const getRecords = async () => {
     try {
-      const records = await getAllRecords();
-      setRecords(records);
+      const fetchedRecords = await getAllRecords();
+      setRecords(fetchedRecords);
     } catch (error) {
       console.log(error);
     } finally {
@@ -45,12 +49,21 @@ export const App = () => {
       setError("学習時間を入力してください");
     } else {
       await addTodo(newTitle, newTime);
+      // await getRecords();
+      let todos = await getAllRecords();
+      setRecords(todos);
       setNewTitle("");
       setNewTime("");
       setError("");
       setTotalTime(totalTime + Number(newTime));
     }
   };
+
+  const handleDelete = async (id) => {
+    await deleteTodo(id);
+    let todos = await getAllRecords();
+    setRecords(todos);
+  }
 
   return (
     <>
@@ -63,11 +76,19 @@ export const App = () => {
             <div className="study-list">
               <h2>記録一覧</h2>
               <ul>
-                {records.map((record, index) => (
-                  <li key={index}>
+                {records.map((record) => (
+                  <li key={record.id}>
                     <span>{record.title}</span>
                     <span> </span>
                     <span className="time">{record.time}時間</span>
+                    {
+                      <button
+                        onClick={() => handleDelete(record.id)}
+                        className="delete-button"
+                      >
+                        削除
+                      </button>
+                    }
                   </li>
                 ))}
               </ul>
