@@ -1,7 +1,8 @@
-import { supabase } from "../utils/supabase";
 import { useState } from "react";
 import "./App.css";
 import { useEffect } from "react";
+import { getAllRecords } from "../utils/supabaseFunctions";
+import { addTodo } from "../utils/supabaseFunctions";
 
 export const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -34,12 +35,7 @@ export const App = () => {
     setNewTime(e.target.value);
   };
 
-  const getAllRecords = async () => {
-    const records = await supabase.from("study-record").select("*");
-    return records.data;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (newTitle.trim() === "" && newTime.trim() === "") {
       setError("学習内容と学習時間を入力してください");
@@ -48,7 +44,7 @@ export const App = () => {
     } else if (newTime.trim() === "" && newTitle.trim() !== "") {
       setError("学習時間を入力してください");
     } else {
-      setRecords([...records, { title: newTitle, time: Number(newTime) }]);
+      await addTodo(newTitle, newTime);
       setNewTitle("");
       setNewTime("");
       setError("");
