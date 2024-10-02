@@ -1,14 +1,27 @@
-name: Deploy using Makefile
+name: CI
 
-on:
-  push:
-    branches: [ master ]
+on: [push]
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Execute Makefile deploy
-      run: make deploy
+    FrontDeploy:
+        name: FrontDeploy
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v2
+            - name: setup Node
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 14.x
+                  registry-url: "https://registry.npmjs.org"
+            - name: Install Dependencies
+              run: yarn
+            - name: Build
+              run: |
+                  npm run build
+                  firebase deploy
+            - name: deploy to Firebase Hosting
+              run: |
+                  firebase deploy --token $FIREBASE_TOKEN
+              env:
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
