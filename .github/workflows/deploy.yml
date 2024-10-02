@@ -1,10 +1,14 @@
-name: Hello World
+name: Deploy using Makefile
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ master ]
 
 jobs:
-  say_hello:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello World!"
+    - uses: actions/checkout@v2
+
+    - name: Execute Makefile deploy
+      run: make deploy
