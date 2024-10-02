@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18.18.0'  # Node.jsのバージョンを18.18.0に更新
+          node-version: '18.16.0'  # Node.jsのバージョンを18.18.0に更新
 
       - name: Clean up package manager files
         run: |

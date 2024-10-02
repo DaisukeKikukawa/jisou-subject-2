@@ -72,7 +72,7 @@ export const App = () => {
       ) : (
         <div className="container">
           <h1 className="title">Σ('◉⌓◉’)学習記録一覧Σ('◉⌓◉’)</h1>
-          <h2>学習記録を追加しよう！</h2>
+          <h2 className="title">学習記録を追加しよう！</h2>
           <div className="content">
             <div className="study-list">
               <h2>記録一覧</h2>
