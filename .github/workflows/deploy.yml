@@ -3,7 +3,7 @@ name: Deploy to Firebase
 on:
   push:
     branches:
-      - master  # メインブランチにプッシュされた時に実行
+      - main  # メインブランチにプッシュされた時に実行
 
 jobs:
   deploy:
@@ -14,13 +14,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18.16.0'  # ローカル環境と同じバージョンを指定
+          node-version: '18.18.0'  # Node.jsのバージョンを18.18.0に更新
+
+      - name: Clean up package manager files
+        run: |
+          rm -f package-lock.json
+          rm -f yarn.lock
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile  # yarnを使用していることが確認できたので、npm ciからyarn installに変更
+        run: npm install  # Yarnの代わりにnpm installを使用
 
       - name: Build
-        run: yarn build  # npm run buildからyarn buildに変更
+        run: npm run build  # npm run buildを使用
 
       - name: List files in the repository
         run: |
