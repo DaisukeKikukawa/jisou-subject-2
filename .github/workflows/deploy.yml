@@ -14,29 +14,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18.16.0'  # Node.jsのバージョンを18.18.0に更新
-
-      - name: Clean up package manager files
-        run: |
-          rm -f package-lock.json
-          rm -f yarn.lock
+          node-version: '18.16.0'  # プロジェクトで使用しているNode.jsのバージョンに合わせてください
 
       - name: Install dependencies
-        run: npm install  # Yarnの代わりにnpm installを使用
+        run: npm ci
 
-      - name: Build
-        run: npm run build  # npm run buildを使用
-
-      - name: List files in the repository
+      - name: Build and Deploy
         run: |
-          echo "Root directory:"
-          ls -la
-          echo "Dist directory:"
-          ls -la dist
-
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only hosting
+          npm run build
+          npx firebase-tools deploy --only hosting --token "$FIREBASE_TOKEN"
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
